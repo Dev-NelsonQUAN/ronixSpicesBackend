@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-require('dotenv/config')
+// require('dotenv/config')
 const {MONGODB_URL} = process.env
 
 const configDb = async () => {
@@ -8,7 +8,7 @@ const configDb = async () => {
         console.log("Connected to Db")
     }
     catch (err) {
-        console.log("Eror connecting to Db")
+        console.log("Error connecting to Db")
     }
 }
 
