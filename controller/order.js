@@ -23,8 +23,11 @@ exports.createOrder = async (req, res) => {
       })),
       totalAmount,
     });
+
     await order.save();
+
     await cartModel.findOneAndDelete({ user: req.user._id });
+    
     return res
       .status(200)
       .json({ message: "Order placed successfully", order });
