@@ -2,7 +2,8 @@ const express = require('express')
 const { signUp, login } = require('../controller/user')
 const { createOrder } = require('../controller/order')
 const { getByCategory } = require('../controller/product')
-const { addToCarts, removeFromCarts } = require('../controller/cart')
+const { addToCarts, removeFromCarts, getUserCart } = require('../controller/cart')
+const { protect } = require('../middleware/authMiddleware')
 const userRoutes = express.Router()
 
 userRoutes.post('/signUp', signUp)
@@ -11,5 +12,6 @@ userRoutes.post('/createOrder', createOrder)
 userRoutes.get('/getByCategory', getByCategory)
 userRoutes.post('/addToCart', addToCarts)
 userRoutes.delete('/removeFromCart', removeFromCarts)
+userRoutes.get('/get-cart', protect, getUserCart)
 
 module.exports = userRoutes

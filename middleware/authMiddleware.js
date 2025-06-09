@@ -1,10 +1,11 @@
 const jwt = require("jsonwebtoken");
 const userModel = require("../model/userModel");
 
-exports.protect = async (req, res, next) => {
-  const token = req.header("Authorization");
-  if (!token) return res.status(400).json({ message: "Unauthorized" });
 
+
+ exports.protect = async (req, res, next) => {
+    const token = req.header('Authorization');
+    if (!token) return res.status(400).json({message: "Unauthorized"})
   try {
     const decoded = jwt.verify(
       token.replace("Bearer ", ""),
@@ -36,9 +37,4 @@ exports.adminOnly = (req, res, next) => {
   next();
 };
 
-// exports.adminOnly = (req, res, next) => {
-//   if (!req.user || req.user.role != "Admin") {
-//     return res.status(400).json({ message: "Admins Only, Access denied" });
-//   }
-//   next();
-// };
+
