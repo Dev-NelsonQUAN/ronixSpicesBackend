@@ -55,3 +55,15 @@ exports.removeFromCarts = async (req, res) => {
         return res.status(500).json({message: "An error occurred", error: error.message})
     }
 } 
+
+exports.getUserCart = async (req, res) => {
+    try{
+        const userId = req.user._id;
+        const cart = await cartModel.findOne({ user: userId}).populate("items")
+        if (!cart) return res.status(400).json({message: "Cart not found"})
+        
+        return res.status(200).json({message: "Cart gotten", cart})
+    } catch (error) {
+        return res.status(500).json({message: "An error occurred", error: error.message})
+    }
+}
