@@ -82,3 +82,12 @@ exports.getByCategory = async (req, res) => {
       .json({ message: "An error occurred", error: error.message });
   }
 };
+
+exports.getAllProduct = async (req, res) => {
+    try {
+        const product = await productModel.find();
+        return res.status(200).json({message: "All products", product})
+    } catch (error) {
+        return res.status(500).json({message: "An error occurred", error: error.message})
+    }
+}
