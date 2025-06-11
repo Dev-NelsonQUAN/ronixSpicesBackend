@@ -3,15 +3,15 @@ const productModel = require("../model/productModel");
 exports.createProduct = async (req, res) => {
   try {
     const { productName, description, price, category } = req.body;
-    if (!req.file || !req.file.path)
-      return res.status(400).json({ message: "Image upload failed" });
+   
+    const imagePaths = req.files.map(file => file.path);
 
     const product = await productModel.create({
       productName,
       description,
-      image: req.file.path,
+      image: imagePaths,
       price,
-      category,
+      category  ,
     });
 
     if (!productName || !description || !price || !category) {
