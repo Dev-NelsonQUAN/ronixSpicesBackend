@@ -7,7 +7,7 @@ exports.addToCarts = async (req, res) => {
     const product = await productModel.findById(productId);
     if (!product) return res.status(400).json({ message: "Product not found" });
 
-    let cart = await cartModel({ user: req.user._id });
+    let cart = await cartModel.findOne({ user: req.user._id });
     if (!cart) {
       cart = new cartModel({
         user: req.user._id,
@@ -57,13 +57,20 @@ exports.removeFromCarts = async (req, res) => {
 } 
 
 exports.getUserCart = async (req, res) => {
-    try{
+    try {
         const userId = req.user._id;
-        const cart = await cartModel.findOne({ user: userId}).populate("items")
-        if (!cart) return res.status(400).json({message: "Cart not found"})
-        
-        return res.status(200).json({message: "Cart gotten", cart})
+
+        const cart = await cartModel.findOne({ user: userId }).populate({
+            path: "items.product",
+            select: "image price productName description" // Add any other fields you want
+        });
+
+        if (!cart) {
+            return res.status(400).json({ message: "Cart not found" });
+        }
+
+        return res.status(200).json({ message: "Cart gotten", cart });
     } catch (error) {
-        return res.status(500).json({message: "An error occurred", error: error.message})
+        return res.status(500).json({ message: "An error occurred", error: error.message });
     }
-}
+};
