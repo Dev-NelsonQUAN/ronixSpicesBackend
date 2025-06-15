@@ -1,7 +1,5 @@
 const productModel = require("../model/productModel");
 
-// controller/product.js
-
 exports.createProduct = async (req, res) => {
   try {
     // 1. Destructure text fields from req.body
@@ -37,7 +35,7 @@ exports.createProduct = async (req, res) => {
 
     return res.status(201).json({ message: "Product created successfully", product });
   } catch (error) {
-    console.error("Error creating product:", error);
+    console.error("Error creating product:", error); // Log the detailed error on the server
 
     // Multer error handling (still relevant)
     if (error.code === 'LIMIT_FILE_SIZE') {
