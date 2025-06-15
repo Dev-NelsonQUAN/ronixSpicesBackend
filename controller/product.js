@@ -9,7 +9,10 @@ exports.createProduct = async (req, res) => {
     if (!productName || !description || !price || !category) {
       return res
         .status(400)
-        .json({ message: "All product text fields (name, description, price, category) are required." });
+        .json({
+          message:
+            "All product text fields (name, description, price, category) are required.",
+        });
     }
 
     // 3. Access the single file from req.file (singular)
@@ -22,7 +25,7 @@ exports.createProduct = async (req, res) => {
 
     const imagePath = imageFile.path;
 
-    const isFeatured = featured === 'true' || featured === true;
+    const isFeatured = featured === "true" || featured === true;
 
     const product = await productModel.create({
       productName,
@@ -33,30 +36,43 @@ exports.createProduct = async (req, res) => {
       featured: isFeatured,
     });
 
-    return res.status(201).json({ message: "Product created successfully", product });
+    return res
+      .status(201)
+      .json({ message: "Product created successfully", product });
   } catch (error) {
     console.error("Error creating product:", error); // Log the detailed error on the server
 
     // Multer error handling (still relevant)
-    if (error.code === 'LIMIT_FILE_SIZE') {
-        return res.status(400).json({ message: "Image file too large.", error: error.message });
+    if (error.code === "LIMIT_FILE_SIZE") {
+      return res
+        .status(400)
+        .json({ message: "Image file too large.", error: error.message });
     }
-    if (error.code === 'LIMIT_UNEXPECTED_FILE') {
-        // This error now specifically means the frontend's field name does not match 'productImage'
-        return res.status(400).json({ message: `Unexpected file field. Ensure frontend sends file as 'productImage'.`, error: error.message });
+    if (error.code === "LIMIT_UNEXPECTED_FILE") {
+      // This error now specifically means the frontend's field name does not match 'productImage'
+      return res
+        .status(400)
+        .json({
+          message: `Unexpected file field. Ensure frontend sends file as 'productImage'.`,
+          error: error.message,
+        });
     }
 
     // Generic server error
     return res
       .status(500)
-      .json({ message: "An unexpected server error occurred while creating the product.", error: error.message });
+      .json({
+        message:
+          "An unexpected server error occurred while creating the product.",
+        error: error.message,
+      });
   }
 };
 
 // exports.createProduct = async (req, res) => {
 //   try {
 //     const { productName, description, price, category } = req.body;
-   
+
 //     const imagePaths = req.files.map(file => file.path);
 
 //     const product = await productModel.create({
@@ -137,10 +153,12 @@ exports.getByCategory = async (req, res) => {
 };
 
 exports.getAllProduct = async (req, res) => {
-    try {
-        const product = await productModel.find();
-        return res.status(200).json({message: "All products", product})
-    } catch (error) {
-        return res.status(500).json({message: "An error occurred", error: error.message})
-    }
-}
+  try {
+    const product = await productModel.find();
+    return res.status(200).json({ message: "All products", product });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "An error occurred", error: error.message });
+  }
+};
