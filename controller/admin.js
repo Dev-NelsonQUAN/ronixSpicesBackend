@@ -37,7 +37,7 @@ exports.adminLogin = async (req, res) => {
     const admin = await userModel.findOne({ email });
 
     if (!admin) {
-      return res.status(404).json({ messasge: "User not found" });
+      return res.status(404).json({ messasge: "Admin not found" });
     }
 
     if (!email || !password) {
