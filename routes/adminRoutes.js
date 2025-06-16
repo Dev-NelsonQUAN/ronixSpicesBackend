@@ -1,4 +1,6 @@
 const express = require("express");
+const adminRouter = express.Router();
+
 const {
   createProduct,
   updateProduct,
@@ -6,17 +8,34 @@ const {
   deleteMultipleProducts,
   getByCategory,
 } = require("../controller/product");
+
+const {
+  createCategory,
+  getAllCategories,
+  getCategoryById,
+  updateCategory,
+  deleteCategory,
+} = require("../controller/categoryController");
+
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 const { adminSignUp, adminLogin } = require("../controller/admin");
-const upload = require("../utils/upload");
-const adminRouter = express.Router();
+const upload = require("../utils/upload"); 
 
 adminRouter.post("/signUp", adminSignUp);
 adminRouter.post("/login", adminLogin);
+
 adminRouter.post("/createProduct", protect, adminOnly, upload.single('productImage'), createProduct);
-adminRouter.patch("/updateProduct/:id", adminOnly, updateProduct);
+adminRouter.patch("/updateProduct/:id", protect, adminOnly, updateProduct);
 adminRouter.delete("/deleteProducts", protect, adminOnly, deleteMultipleProducts);
-adminRouter.get('/getAllProduct', protect, adminOnly, getAllProduct)
-adminRouter.get('/getByCategory', protect, adminOnly, getByCategory )
+adminRouter.get('/getAllProduct', protect, adminOnly, getAllProduct);
+adminRouter.get('/getByCategory', protect, adminOnly, getByCategory);
+
+
+adminRouter.post("/categories", protect, adminOnly, createCategory);
+adminRouter.get("/categories", protect, adminOnly, getAllCategories);
+adminRouter.get("/categories/:id", protect, adminOnly, getCategoryById);
+adminRouter.put("/categories/:id", protect, adminOnly, updateCategory);
+adminRouter.delete("/categories/:id", protect, adminOnly, deleteCategory);
+
 
 module.exports = adminRouter;
