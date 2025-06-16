@@ -14,7 +14,7 @@ adminRouter.post("/signUp", adminSignUp);
 adminRouter.post("/login", adminLogin);
 adminRouter.post("/createProduct", protect, adminOnly, upload.single('productImage'), createProduct);
 adminRouter.patch("/updateProduct", adminOnly, updateProduct);
-adminRouter.delete("/deleteProduct", adminOnly, deleteProduct);
+adminRouter.delete("/deleteProduct", protect, adminOnly, deleteProduct);
 adminRouter.get('/getAllProduct', getAllProduct)
 
 module.exports = adminRouter;
