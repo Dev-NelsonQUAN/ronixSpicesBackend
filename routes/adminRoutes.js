@@ -15,7 +15,7 @@ const {
   getCategoryById,
   updateCategory,
   deleteCategory,
-} = require("../controller/categoryController");
+} = require("../controller/category");
 
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 const { adminSignUp, adminLogin } = require("../controller/admin");
