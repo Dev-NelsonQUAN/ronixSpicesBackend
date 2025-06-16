@@ -20,6 +20,7 @@ const {
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 const { adminSignUp, adminLogin } = require("../controller/admin");
 const upload = require("../utils/upload"); 
+const { getAllOrders, updateOrder } = require("../controller/order");
 
 adminRouter.post("/signUp", adminSignUp);
 adminRouter.post("/login", adminLogin);
@@ -36,6 +37,9 @@ adminRouter.get("/categories", protect, adminOnly, getAllCategories);
 adminRouter.get("/categories/:id", protect, adminOnly, getCategoryById);
 adminRouter.put("/categories/:id", protect, adminOnly, updateCategory);
 adminRouter.delete("/categories/:id", protect, adminOnly, deleteCategory);
+
+adminRouter.get('/getAllOrders', protect, adminOnly, getAllOrders)
+adminRouter.patch('/updateOrder /:id', protect, adminOnly, updateOrder)
 
 
 module.exports = adminRouter;
