@@ -39,7 +39,7 @@ adminRouter.put("/categories/:id", protect, adminOnly, updateCategory);
 adminRouter.delete("/categories/:id", protect, adminOnly, deleteCategory);
 
 adminRouter.get('/getAllOrders', protect, adminOnly, getAllOrders)
-adminRouter.patch('/updateOrder /:id', protect, adminOnly, updateOrder)
+adminRouter.patch('/updateOrder/:id', protect, adminOnly, updateOrder)
 
 
 module.exports = adminRouter;
