@@ -69,34 +69,6 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-// exports.createProduct = async (req, res) => {
-//   try {
-//     const { productName, description, price, category } = req.body;
-
-//     const imagePaths = req.files.map(file => file.path);
-
-//     const product = await productModel.create({
-//       productName,
-//       description,
-//       image: imagePaths,
-//       price,
-//       category,
-//     });
-
-//     if (!productName || !description || !price || !category) {
-//       return res
-//         .status(400)
-//         .json({ message: "All product fields are required." });
-//     }
-
-//     return res.status(201).json({ message: "Product created", product });
-//   } catch (error) {
-//     return res
-//       .status(500)
-//       .json({ message: "An error occurred", error: error.message });
-//   }
-// };
-
 exports.updateProduct = async (req, res) => {
   try {
     const { productName, description, price, category } = req.body;
@@ -120,18 +92,27 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-exports.deleteProduct = async (req, res) => {
-  try {
-    const product = await productModel.findByIdAndDelete(req.params.id);
-    if (!product) return res.status(400).json({ message: "Product not found" });
 
-    return res.status(200).json({ message: "Product Deleted successfully" });
+exports.deleteMultipleProducts = async (req, res) => {
+  try {
+    const { ids } = req.body; // Expects an array of IDs in the request body
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: "No product IDs provided for deletion." });
+    }
+
+    // Delete all products whose _id is in the 'ids' array
+    const result = await productModel.deleteMany({ _id: { $in: ids } });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "No products found to delete with the provided IDs." });
+    }
+
+    return res.status(200).json({ message: `${result.deletedCount} products deleted successfully.` });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "An error occurred", error: error.message });
+    return res.status(500).json({ message: "An error occurred during batch deletion", error: error.message });
   }
 };
+
 
 exports.getByCategory = async (req, res) => {
   try {
