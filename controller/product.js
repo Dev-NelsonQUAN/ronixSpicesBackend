@@ -1,6 +1,6 @@
 const productModel = require("../model/productModel");
 const Category = require("../model/categoryModel");
-const { Mongoose } = require("mongoose");
+const mongoose  = require("mongoose");
 
 exports.createProduct = async (req, res) => {
   try {
@@ -23,7 +23,7 @@ exports.createProduct = async (req, res) => {
     }
 
     // 3. Validate if the provided categoryId is a valid ObjectId and exists
-    if (!Mongoose.Types.ObjectId.isValid(categoryId)) {
+    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
       return res.status(400).json({ message: "Invalid category ID format." });
     }
     const existingCategory = await Category.findById(categoryId);
