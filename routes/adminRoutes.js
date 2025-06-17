@@ -21,6 +21,7 @@ const { protect, adminOnly } = require("../middleware/authMiddleware");
 const { adminSignUp, adminLogin } = require("../controller/admin");
 const upload = require("../utils/upload");
 const { getAllOrders, updateOrder } = require("../controller/order");
+const { getAllUsers } = require("../controller/user");
 
 adminRouter.post("/signUp", adminSignUp);
 adminRouter.post("/login", adminLogin);
@@ -50,5 +51,6 @@ adminRouter.delete("/categories/:id", protect, adminOnly, deleteCategory);
 
 adminRouter.get("/getAllOrders", protect, adminOnly, getAllOrders);
 adminRouter.patch("/updateOrder/:id", protect, adminOnly, updateOrder);
+adminRouter.get('/getAllUsers', protect, adminOnly, getAllUsers)
 
 module.exports = adminRouter;
