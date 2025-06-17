@@ -49,3 +49,21 @@ exports.login = async (req, res) => {
       .json({ message: "An error occurred", error: error.message });
   }
 };
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await userModel.find().select('fullName email phoneNumber role createdAt');
+
+    return res.status(200).json({
+      message: "Users fetched successfully",
+      users: users 
+    });
+
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    return res.status(500).json({
+      message: "An error occurred while fetching users",
+      error: error.message
+    });
+  }
+};

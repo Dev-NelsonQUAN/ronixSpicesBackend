@@ -1,19 +1,15 @@
-const Category = require("../model/categoryModel"); // Adjust path if your model is in a different directory
-const mongoose = require("mongoose"); // Required for ObjectId validation
+const Category = require("../model/categoryModel"); 
+const mongoose = require("mongoose"); 
 
-// @desc    Create a new Category
-// @route   POST /api/admin/categories
-// @access  Private/Admin
+
 exports.createCategory = async (req, res) => {
   try {
     const { name, description, active } = req.body;
 
-    // Basic validation
     if (!name) {
       return res.status(400).json({ message: "Category name is required." });
     }
 
-    // Check if a category with this name already exists
     const existingCategory = await Category.findOne({ name });
     if (existingCategory) {
       return res
@@ -21,11 +17,10 @@ exports.createCategory = async (req, res) => {
         .json({ message: "Category with this name already exists." });
     }
 
-    // Create the new category
     const category = await Category.create({
       name,
-      description: description || "", // Use default if not provided
-      active: active !== undefined ? active : true, // Set active based on input, default to true
+      description: description || "",
+      active: active !== undefined ? active : true,
     });
 
     return res
@@ -34,7 +29,6 @@ exports.createCategory = async (req, res) => {
   } catch (error) {
     console.error("Error creating category:", error);
     if (error.code === 11000) {
-      // Duplicate key error from MongoDB
       return res.status(400).json({
         message: "A category with this name already exists.",
         error: error.message,
@@ -47,14 +41,10 @@ exports.createCategory = async (req, res) => {
   }
 };
 
-// @desc    Get all Categories
-// @route   GET /api/admin/categories
-// @access  Private/Admin (or Public if filter dropdown needs it before login)
-// This is the endpoint that will populate your Category filter dropdown in ProductList
+
 exports.getAllCategories = async (req, res) => {
   try {
-    // Optionally filter by active status if the frontend only needs active ones
-    // Or add a query parameter to allow fetching all or only active
+ 
     const { activeOnly } = req.query;
     let query = {};
     if (activeOnly === "true") {
@@ -81,9 +71,6 @@ exports.getAllCategories = async (req, res) => {
   }
 };
 
-// @desc    Get a single Category by ID
-// @route   GET /api/admin/categories/:id
-// @access  Private/Admin
 exports.getCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -110,9 +97,6 @@ exports.getCategoryById = async (req, res) => {
   }
 };
 
-// @desc    Update a Category
-// @route   PUT /api/admin/categories/:id
-// @access  Private/Admin
 exports.updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -128,7 +112,6 @@ exports.updateCategory = async (req, res) => {
       return res.status(404).json({ message: "Category not found." });
     }
 
-    // Check for duplicate name if name is being updated and it's different from current
     if (name !== undefined && name !== category.name) {
       const existingCategory = await Category.findOne({ name });
       if (existingCategory && existingCategory._id.toString() !== id) {
@@ -138,10 +121,9 @@ exports.updateCategory = async (req, res) => {
       }
     }
 
-    // Update fields if provided in the request body
     if (name !== undefined) category.name = name;
     if (description !== undefined) category.description = description;
-    if (active !== undefined) category.active = active; // `active` is boolean directly
+    if (active !== undefined) category.active = active;
 
     const updatedCategory = await category.save();
 
@@ -178,7 +160,7 @@ exports.deleteCategory = async (req, res) => {
       return res.status(404).json({ message: "Category not found." });
     }
 
-    await category.deleteOne(); // Using deleteOne() on the found document
+    await category.deleteOne();
 
     return res.status(200).json({ message: "Category deleted successfully" });
   } catch (error) {
