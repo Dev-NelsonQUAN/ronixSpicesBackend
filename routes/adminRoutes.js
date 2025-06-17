@@ -19,18 +19,28 @@ const {
 
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 const { adminSignUp, adminLogin } = require("../controller/admin");
-const upload = require("../utils/upload"); 
+const upload = require("../utils/upload");
 const { getAllOrders, updateOrder } = require("../controller/order");
 
 adminRouter.post("/signUp", adminSignUp);
 adminRouter.post("/login", adminLogin);
 
-adminRouter.post("/createProduct", protect, adminOnly, upload.single('productImage'), createProduct);
+adminRouter.post(
+  "/createProduct",
+  protect,
+  adminOnly,
+  upload.single("productImage"),
+  createProduct
+);
 adminRouter.patch("/updateProduct/:id", protect, adminOnly, updateProduct);
-adminRouter.delete("/deleteProducts", protect, adminOnly, deleteMultipleProducts);
-adminRouter.get('/getAllProduct', protect, adminOnly, getAllProduct);
-adminRouter.get('/getByCategory', protect, adminOnly, getByCategory);
-
+adminRouter.delete(
+  "/deleteProducts",
+  protect,
+  adminOnly,
+  deleteMultipleProducts
+);
+adminRouter.get("/getAllProduct", protect, adminOnly, getAllProduct);
+adminRouter.get("/getByCategory", protect, adminOnly, getByCategory);
 
 adminRouter.post("/categories", protect, adminOnly, createCategory);
 adminRouter.get("/categories", protect, adminOnly, getAllCategories);
@@ -38,8 +48,7 @@ adminRouter.get("/categories/:id", protect, adminOnly, getCategoryById);
 adminRouter.put("/categories/:id", protect, adminOnly, updateCategory);
 adminRouter.delete("/categories/:id", protect, adminOnly, deleteCategory);
 
-adminRouter.get('/getAllOrders', protect, adminOnly, getAllOrders)
-adminRouter.patch('/updateOrder/:id', protect, adminOnly, updateOrder)
-
+adminRouter.get("/getAllOrders", protect, adminOnly, getAllOrders);
+adminRouter.patch("/updateOrder/:id", protect, adminOnly, updateOrder);
 
 module.exports = adminRouter;

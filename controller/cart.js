@@ -62,7 +62,7 @@ exports.getUserCart = async (req, res) => {
 
         const cart = await cartModel.findOne({ user: userId }).populate({
             path: "items.product",
-            select: "image price productName description" // Add any other fields you want
+            select: "image price productName description" 
         });
 
         if (!cart) {

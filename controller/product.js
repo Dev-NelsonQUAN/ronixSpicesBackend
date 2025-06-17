@@ -22,7 +22,6 @@ exports.createProduct = async (req, res) => {
       });
     }
 
-    // 3. Validate if the provided categoryId is a valid ObjectId and exists
     if (!mongoose.Types.ObjectId.isValid(categoryId)) {
       return res.status(400).json({ message: "Invalid category ID format." });
     }
@@ -33,29 +32,25 @@ exports.createProduct = async (req, res) => {
         .json({ message: "Category not found with the provided ID." });
     }
 
-    // 4. Access the single file from req.file (singular)
     const imageFile = req.file;
 
-    // 5. Validate image file existence
     if (!imageFile) {
       return res.status(400).json({ message: "Product image is required." });
     }
 
     const imagePath = imageFile.path;
 
-    const isFeatured = featured === "true" || featured === true; // Convert string "true"/"false" to boolean
+    const isFeatured = featured === "true" || featured === true; 
 
     const product = await productModel.create({
       productName,
       description,
-      image: [imagePath], // Store imagePath in an array as per product model
+      image: [imagePath],
       price,
-      category: categoryId, // Save the ObjectId
+      category: categoryId,
       featured: isFeatured,
     });
 
-    // Populate the category field to return the full category object if needed,
-    // though often for create you just return the new product without full population
     const populatedProduct = await productModel
       .findById(product._id)
       .populate("category", "name");
@@ -81,7 +76,6 @@ exports.createProduct = async (req, res) => {
       });
     }
 
-    // Generic server error
     return res.status(500).json({
       message:
         "An unexpected server error occurred while creating the product.",
@@ -116,21 +110,19 @@ exports.updateProduct = async (req, res) => {
           .status(404)
           .json({ message: "Category not found with the provided ID." });
       }
-      product.category = categoryId; // Update with ObjectId
+      product.category = categoryId;
     }
 
-    // Update fields if provided in the request body
     if (productName !== undefined) product.productName = productName;
     if (price !== undefined) product.price = price;
     if (description !== undefined) product.description = description;
     if (inStock !== undefined)
-      product.inStock = inStock === "true" || inStock === true; // Handle boolean conversion
+      product.inStock = inStock === "true" || inStock === true;
     if (featured !== undefined)
-      product.featured = featured === "true" || featured === true; // Handle boolean conversion
+      product.featured = featured === "true" || featured === true; 
 
-    // Handle image update
     if (req.file?.path) {
-      product.image = [req.file.path]; // Assuming you want to replace with a new single image path
+      product.image = [req.file.path]; 
     }
 
     const updatedProduct = await product.save();
