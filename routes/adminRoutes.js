@@ -4,7 +4,6 @@ const adminRouter = express.Router();
 const {
   createProduct,
   updateProduct,
-  getAllProduct,
   deleteMultipleProducts,
   getByCategory,
   getAllProducts,
