@@ -4,9 +4,9 @@ const adminRouter = express.Router();
 const {
   createProduct,
   updateProduct,
-  getAllProduct,
   deleteMultipleProducts,
   getByCategory,
+  getAllProducts,
 } = require("../controller/product");
 
 const {
@@ -40,7 +40,7 @@ adminRouter.delete(
   adminOnly,
   deleteMultipleProducts
 );
-adminRouter.get("/getAllProduct", protect, adminOnly, getAllProduct);
+adminRouter.get("/getAllProducts", protect, adminOnly, getAllProducts);
 adminRouter.get("/getByCategory", protect, adminOnly, getByCategory);
 
 adminRouter.post("/categories", protect, adminOnly, createCategory);
