@@ -17,6 +17,6 @@ userRoutes.get("/getByCategory", getByCategory);
 userRoutes.post("/addToCart", protect, addToCarts);
 userRoutes.delete("/removeFromCart", protect, removeFromCarts);
 userRoutes.get("/get-cart", protect, getUserCart);
-userRoutes.get("/all-product", getAllProduct);
+userRoutes.get("/all-products", getAllProducts);
 
 module.exports = userRoutes;
