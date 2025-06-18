@@ -1,11 +1,9 @@
 const productModel = require("../model/productModel");
 const Category = require("../model/categoryModel");
-const mongoose  = require("mongoose");
+const mongoose = require("mongoose");
 
 exports.createProduct = async (req, res) => {
   try {
-    // 1. Destructure fields from req.body.
-    // Expect `categoryId` instead of `category` string.
     const {
       productName,
       description,
@@ -14,7 +12,6 @@ exports.createProduct = async (req, res) => {
       featured,
     } = req.body;
 
-    // 2. Validate essential text fields including the categoryId
     if (!productName || !description || !price || !categoryId) {
       return res.status(400).json({
         message:
@@ -40,7 +37,7 @@ exports.createProduct = async (req, res) => {
 
     const imagePath = imageFile.path;
 
-    const isFeatured = featured === "true" || featured === true; 
+    const isFeatured = featured === "true" || featured === true;
 
     const product = await productModel.create({
       productName,
@@ -55,12 +52,10 @@ exports.createProduct = async (req, res) => {
       .findById(product._id)
       .populate("category", "name");
 
-    return res
-      .status(201)
-      .json({
-        message: "Product created successfully",
-        product: populatedProduct,
-      });
+    return res.status(201).json({
+      message: "Product created successfully",
+      product: populatedProduct,
+    });
   } catch (error) {
     console.error("Error creating product:", error);
 
@@ -119,10 +114,10 @@ exports.updateProduct = async (req, res) => {
     if (inStock !== undefined)
       product.inStock = inStock === "true" || inStock === true;
     if (featured !== undefined)
-      product.featured = featured === "true" || featured === true; 
+      product.featured = featured === "true" || featured === true;
 
     if (req.file?.path) {
-      product.image = [req.file.path]; 
+      product.image = [req.file.path];
     }
 
     const updatedProduct = await product.save();
@@ -136,12 +131,10 @@ exports.updateProduct = async (req, res) => {
       .json({ message: "Product updated", updated: populatedUpdatedProduct });
   } catch (error) {
     console.error("Error updating product:", error);
-    return res
-      .status(500)
-      .json({
-        message: "An error occurred during product update",
-        error: error.message,
-      });
+    return res.status(500).json({
+      message: "An error occurred during product update",
+      error: error.message,
+    });
   }
 };
 
@@ -157,25 +150,19 @@ exports.deleteMultipleProducts = async (req, res) => {
     const result = await productModel.deleteMany({ _id: { $in: ids } });
 
     if (result.deletedCount === 0) {
-      return res
-        .status(404)
-        .json({
-          message: "No products found to delete with the provided IDs.",
-        });
+      return res.status(404).json({
+        message: "No products found to delete with the provided IDs.",
+      });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: `${result.deletedCount} products deleted successfully.`,
-      });
+    return res.status(200).json({
+      message: `${result.deletedCount} products deleted successfully.`,
+    });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        message: "An error occurred during batch deletion",
-        error: error.message,
-      });
+    return res.status(500).json({
+      message: "An error occurred during batch deletion",
+      error: error.message,
+    });
   }
 };
 
@@ -202,44 +189,41 @@ exports.getByCategory = async (req, res) => {
       .populate("category", "name");
 
     if (products.length === 0) {
-      return res
-        .status(404)
-        .json({
-          message: `No products found in the category: ${categoryName}`,
-          product: [],
-        });
+      return res.status(404).json({
+        message: `No products found in the category: ${categoryName}`,
+        product: [],
+      });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: `Products gotten by category: ${categoryName}`,
-        product: products,
-      });
+    return res.status(200).json({
+      message: `Products gotten by category: ${categoryName}`,
+      product: products,
+    });
   } catch (error) {
     console.error("Error getting products by category:", error);
-    return res
-      .status(500)
-      .json({
-        message: "An error occurred while getting products by category",
-        error: error.message,
-      });
+    return res.status(500).json({
+      message: "An error occurred while getting products by category",
+      error: error.message,
+    });
   }
 };
 
-exports.getAllProduct = async (req, res) => {
+exports.getAllProducts = async (req, res) => {
   try {
-    const product = await productModel.find().populate("category", "name");
+    const products = await productModel
+      .find({})
+      .populate("category", "name") 
+      .lean(); // Use .lean() for plain JavaScript objects, often faster for reads
 
-    return res.status(200).json({ message: "All products", product });
+    return res.status(200).json({
+      message: "All products fetched successfully",
+      product: products,
+    });
   } catch (error) {
-    console.error("Error getting all products:", error);
-
-    return res
-      .status(500)
-      .json({
-        message: "An error occurred while getting all products",
-        error: error.message,
-      });
+    console.error("Error fetching all products:", error);
+    return res.status(500).json({
+      message: "An error occurred while fetching products",
+      error: error.message,
+    });
   }
 };
