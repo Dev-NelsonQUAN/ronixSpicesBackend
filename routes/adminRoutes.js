@@ -5,8 +5,8 @@ const {
   createProduct,
   updateProduct,
   deleteMultipleProducts,
-  getByCategory,
   getAllProducts,
+  getByCategory,
 } = require("../controller/product");
 
 const {
