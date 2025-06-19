@@ -1,6 +1,6 @@
-const Category = require("../model/categoryModel"); 
-const mongoose = require("mongoose"); 
-
+const Category = require("../model/categoryModel");
+const Product = require("../model/productModel"); // Import the Product model
+const mongoose = require("mongoose");
 
 exports.createCategory = async (req, res) => {
   try {
@@ -41,18 +41,53 @@ exports.createCategory = async (req, res) => {
   }
 };
 
-
 exports.getAllCategories = async (req, res) => {
   try {
- 
     const { activeOnly } = req.query;
-    let query = {};
+    let matchQuery = {};
     if (activeOnly === "true") {
-      query.active = true;
+      matchQuery.active = true;
     }
 
-    const categories = await Category.find(query).sort({ name: 1 });
-    
+    const categories = await Category.aggregate([
+      // Stage 1: Filter categories based on activeOnly query parameter
+      {
+        $match: matchQuery,
+      },
+      // Stage 2: Join with the 'products' collection
+      {
+        $lookup: {
+          from: "products", // The name of the products collection in MongoDB
+          localField: "_id", // Field from the input documents (Category's _id)
+          foreignField: "category", // Field from the "products" documents (Product's category field)
+          as: "productsData", // The array field to add to the input documents
+        },
+      },
+      // Stage 3: Add a new field 'productCount' which is the size of the 'productsData' array
+      {
+        $addFields: {
+          productCount: { $size: "$productsData" },
+        },
+      },
+      // Stage 4: Project (select) the fields you want to return and exclude the temporary 'productsData'
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          description: 1,
+          active: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          productCount: 1, // Include the new productCount field
+          productsData: 0, // Exclude the temporary productsData array
+        },
+      },
+      // Stage 5: Sort the results by category name
+      {
+        $sort: { name: 1 },
+      },
+    ]);
+
     if (categories.length === 0) {
       return res
         .status(200)
