@@ -166,47 +166,6 @@ exports.deleteMultipleProducts = async (req, res) => {
   }
 };
 
-exports.getByCategory = async (req, res) => {
-  try {
-    const { category: categoryName } = req.query;
-
-    if (!categoryName) {
-      return res
-        .status(400)
-        .json({ message: "Category name is required for filtering." });
-    }
-
-    const categoryDoc = await Category.findOne({ name: categoryName });
-
-    if (!categoryDoc) {
-      return res
-        .status(404)
-        .json({ message: "Category not found.", product: [] });
-    }
-
-    const products = await productModel
-      .find({ category: categoryDoc._id })
-      .populate("category", "name");
-
-    if (products.length === 0) {
-      return res.status(404).json({
-        message: `No products found in the category: ${categoryName}`,
-        product: [],
-      });
-    }
-
-    return res.status(200).json({
-      message: `Products gotten by category: ${categoryName}`,
-      product: products,
-    });
-  } catch (error) {
-    console.error("Error getting products by category:", error);
-    return res.status(500).json({
-      message: "An error occurred while getting products by category",
-      error: error.message,
-    });
-  }
-};
 
 exports.getAllProducts = async (req, res) => {
   try {
