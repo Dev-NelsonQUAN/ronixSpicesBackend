@@ -42,7 +42,6 @@ exports.createCategory = async (req, res) => {
   }
 };
 
-// Updated getAllCategories to include product count
 exports.getAllCategories = async (req, res) => {
   try {
     const { activeOnly } = req.query;
@@ -205,6 +204,66 @@ exports.deleteCategory = async (req, res) => {
     console.error("Error deleting category:", error);
     return res.status(500).json({
       message: "An error occurred while deleting the category",
+      error: error.message,
+    });
+  }
+};
+
+exports.getByCategory = async (req, res) => {
+  try {
+    const { category: categoryName } = req.query;
+
+    if (!categoryName) {
+      return res
+        .status(400)
+        .json({ message: "Category name is required for filtering." });
+    }
+
+    let products;
+
+    if (categoryName === 'all') {
+      products = await productModel
+        .find({}) // Find all products
+        .populate("category", "name")
+        .lean();
+      
+      if (products.length === 0) {
+        return res.status(200).json({ 
+          message: "No products available in the menu.",
+          product: [],
+        });
+      }
+
+    } else {
+      const categoryDoc = await Category.findOne({ name: categoryName });
+
+      if (!categoryDoc) {
+        return res
+          .status(404)
+          .json({ message: `Category '${categoryName}' not found.`, product: [] });
+      }
+
+      products = await productModel
+        .find({ category: categoryDoc._id })
+        .populate("category", "name")
+        .lean();
+
+      if (products.length === 0) {
+        return res.status(200).json({ 
+          message: `No products found in the category: ${categoryName}`,
+          product: [],
+        });
+      }
+    }
+
+    return res.status(200).json({
+      message: `Products retrieved successfully for category: ${categoryName}`,
+      product: products,
+    });
+  } catch (error) {
+    console.error("Error getting products by category:", error);
+    return res.status(500).json({
+      message: "An error occurred while getting products by category",
       error: error.message,
     });
   }
