@@ -85,7 +85,7 @@ exports.getAllCategories = async (req, res) => {
         },
       },
       // Stage 5: Sort the results by category name
-      {
+      {     
         $sort: { name: 1 },
       },
     ]);
