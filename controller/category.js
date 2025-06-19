@@ -1,5 +1,6 @@
 const Category = require("../model/categoryModel");
-const Product = require("../model/productModel"); // Import the Product model
+// eslint-disable-next-line no-unused-vars
+const Product = require("../model/productModel"); // Product model is used implicitly by $lookup for collection name lookup
 const mongoose = require("mongoose");
 
 exports.createCategory = async (req, res) => {
@@ -41,6 +42,7 @@ exports.createCategory = async (req, res) => {
   }
 };
 
+// Updated getAllCategories to include product count
 exports.getAllCategories = async (req, res) => {
   try {
     const { activeOnly } = req.query;
@@ -70,6 +72,7 @@ exports.getAllCategories = async (req, res) => {
         },
       },
       // Stage 4: Project (select) the fields you want to return and exclude the temporary 'productsData'
+      // FIX: Removed productsData: 0, as it's implicitly excluded by not being listed for inclusion.
       {
         $project: {
           _id: 1,
@@ -79,7 +82,7 @@ exports.getAllCategories = async (req, res) => {
           createdAt: 1,
           updatedAt: 1,
           productCount: 1, // Include the new productCount field
-          productsData: 0, // Exclude the temporary productsData array
+          // productsData is now implicitly excluded because it's not listed here with '1'
         },
       },
       // Stage 5: Sort the results by category name
