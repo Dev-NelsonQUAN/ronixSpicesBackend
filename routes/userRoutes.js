@@ -1,7 +1,7 @@
 const express = require("express");
 const { signUp, login } = require("../controller/user");
 const { createOrder } = require("../controller/order");
-const { getByCategory, getAllProducts } = require("../controller/product");
+const { getAllProducts, getByCategory } = require("../controller/product");
 const {
   addToCarts,
   removeFromCarts,
@@ -12,8 +12,8 @@ const userRoutes = express.Router();
 
 userRoutes.post("/signUp", signUp);
 userRoutes.post("/login", login);
-userRoutes.post("/createOrder", createOrder);
-userRoutes.get("/getByCategory", getByCategory);
+userRoutes.post("/createOrder", protect, createOrder);
+userRoutes.get("/getByCategory", protect, getByCategory);
 userRoutes.post("/addToCart", protect, addToCarts);
 userRoutes.delete("/removeFromCart", protect, removeFromCarts);
 userRoutes.get("/get-cart", protect, getUserCart);
