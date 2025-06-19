@@ -25,6 +25,7 @@ exports.adminSignUp = async (req, res) => {
     await createAdmin.save();
 
     return res.status(201).json({ message: "Admin created successfully", data: createAdmin });
+
   } catch (err) {
     return res.status(500).json({ message: "Server error", err });
   }
